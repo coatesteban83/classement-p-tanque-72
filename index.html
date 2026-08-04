@@ -6,32 +6,31 @@
     <title>Classement Pétanque - Tournoi du Mois</title>
     <style>
         :root {
-    --primary-color: #1b4d2e; /* Vert terrain de pétanque */
-    --accent-color: #e67e22; /* Couleur cochonnet / sable */
-    --bg-color: #d4ebd0;     /* Vert clair/pastel évoquant l'ambiance extérieure du boulodrome */
-    --card-bg: #ffffff;
-    --text-color: #333333;
-}
+            --primary-color: #1b4d2e; /* Vert terrain de pétanque */
+            --accent-color: #e67e22; /* Couleur cochonnet / sable */
+            --bg-color: #d4ebd0;     /* Vert clair/pastel ambiance boulodrome */
+            --card-bg: #ffffff;
+            --text-color: #333333;
+        }
 
         body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--bg-color);
-    /* Ajout d'un motif discret de gravillons/texture sur le fond */
-    background-image: radial-gradient(#b8d8b2 15%, transparent 16%), radial-gradient(#b8d8b2 15%, transparent 16%);
-    background-size: 20px 20px;
-    background-position: 0 0, 10px 10px;
-    color: var(--text-color);
-    margin: 0;
-    padding: 0;
-}
-       header {
-    background-color: var(--primary-color);
-    color: white;
-    text-align: center;
-    padding: 2rem 1rem;
-    /* Ajout d'une bordure basse effet cochonnet/bois ou couleur terre battue/sable */
-    border-bottom: 4px solid var(--accent-color); 
-}
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(#b8d8b2 15%, transparent 16%), radial-gradient(#b8d8b2 15%, transparent 16%);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 2rem 1rem;
+            border-bottom: 4px solid var(--accent-color);
+        }
 
         header h1 {
             margin: 0;
@@ -40,7 +39,7 @@
 
         header p {
             margin: 0.5rem 0 0 0;
-            opacity: 0.8;
+            opacity: 0.9;
         }
 
         .container {
@@ -52,7 +51,7 @@
         .nav-tabs {
             display: flex;
             justify-content: center;
-            gap: 0.8rem;
+            gap: 0.6rem;
             margin-bottom: 2rem;
             flex-wrap: wrap;
         }
@@ -162,6 +161,16 @@
         .player-tag {
             font-size: 0.9rem;
         }
+
+        /* Styles spécifiques pour la page d'accueil */
+        .home-card {
+            background: #fdfdfd;
+            border-left: 5px solid var(--accent-color);
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
     </style>
 </head>
 <body>
@@ -174,15 +183,44 @@
     <div class="container">
         <!-- Boutons de navigation -->
         <div class="nav-tabs">
-            <button class="tab-btn active" onclick="switchTab('indiv')">Individuel</button>
+            <button class="tab-btn active" onclick="switchTab('home')">Accueil</button>
+            <button class="tab-btn" onclick="switchTab('indiv')">Individuel</button>
             <button class="tab-btn" onclick="switchTab('teams')">Équipes</button>
             <button class="tab-btn" onclick="switchTab('history')">Matchs du Mois</button>
             <button class="tab-btn" onclick="switchTab('archives')">Archives Mois</button>
             <button class="tab-btn" onclick="switchTab('admin')">Admin</button>
         </div>
 
+        <!-- Onglet 0: Accueil -->
+        <div id="home" class="tab-content active">
+            <h2>Bienvenue sur l'espace officiel du Challenge de Pétanque ! 🎯</h2>
+            <p>Cet outil a été conçu pour suivre en temps réel les performances de notre groupe tout au long du mois. Que vous soyez pointeur, tireur ou simple amateur de bonne ambiance au boulodrome, voici ce que vous trouverez sur ce site :</p>
+            
+            <div class="home-card">
+                <h3>📊 1. Le Classement Individuel</h3>
+                <p>Cumulez le maximum de points au fil des parties jouées pour décrocher la première place du classement individuel du mois.</p>
+            </div>
+
+            <div class="home-card">
+                <h3>👥 2. Le Classement par Équipes</h3>
+                <p>Suivez les performances des duos et trios formés au gré des soirées et découvrez quelle association de joueurs s'avère être la redoutable reine de la pétanque.</p>
+            </div>
+
+            <div class="home-card">
+                <h3>📜 3. L'Historique du Mois & Archives</h3>
+                <p>Retrouvez le détail de toutes les parties disputées récemment, ainsi que les podiums des mois précédents pour garder une trace de vos exploits passés.</p>
+            </div>
+
+            <div class="home-card">
+                <h3>⚙️ 4. Espace Administrateur</h3>
+                <p>Réservé à la saisie des scores des matchs de la soirée, à la gestion de la liste des joueurs et à la clôture des mois pour lancer de nouvelles saisons.</p>
+            </div>
+            
+            <p style="text-align: center; margin-top: 2rem; font-style: italic; color: var(--primary-color);">Bon tournoi à toutes et à tous, et que le meilleur gagne ! 🐖🪵</p>
+        </div>
+
         <!-- Onglet 1: Individuel -->
-        <div id="indiv" class="tab-content active">
+        <div id="indiv" class="tab-content">
             <h2>Classement Individuel du Mois</h2>
             <p>Total des points marqués cumulés sur toutes les parties du mois en cours.</p>
             <table>
@@ -529,7 +567,7 @@
                 html = '<p>Aucun mois archivé pour le moment.</p>';
             } else {
                 [...archives].reverse().forEach(arc => {
-                    html += `<div style="background:#fdfefe; border:2px solid #2c3e50; padding:1rem; margin-bottom:1.5rem; border-radius:8px;">
+                    html += `<div style="background:#fdfefe; border:2px solid #1b4d2e; padding:1rem; margin-bottom:1.5rem; border-radius:8px;">
                         <h3 style="margin-top:0; color:var(--primary-color);">📅 Mois : ${arc.month}</h3>
                         <h4>Podium Individuel</h4>
                         <ul>`;
@@ -541,8 +579,6 @@
             }
             document.getElementById('archives-list').innerHTML = html;
         }
-
-        updateIndivTable();
     </script>
 </body>
 </html>
