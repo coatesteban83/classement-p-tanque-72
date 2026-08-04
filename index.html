@@ -227,7 +227,6 @@
         <div id="admin" class="tab-content">
             <div id="login-section" class="admin-login">
                 <h2>Connexion Administrateur</h2>
-                <p>Mot de passe par défaut : <code>petanque2026</code></p>
                 <input type="password" id="admin-pass" placeholder="Mot de passe">
                 <button class="action-btn" onclick="loginAdmin()">Se connecter</button>
             </div>
@@ -332,7 +331,6 @@
         }
 
         function renderAdminPanel() {
-            // Liste des joueurs modifiables
             let listHtml = '<strong>Joueurs inscrits (' + players.length + ') :</strong><ul>';
             players.forEach(p => {
                 listHtml += `<li>${p} <button onclick="removePlayer('${p}')" style="color:red; border:none; background:none; cursor:pointer;">[Supprimer]</button></li>`;
@@ -340,7 +338,6 @@
             listHtml += '</ul>';
             document.getElementById('players-list-admin').innerHTML = listHtml;
 
-            // Checkboxes pour match
             let checkA = '';
             let checkB = '';
             players.forEach(p => {
@@ -350,7 +347,6 @@
             document.getElementById('team-a-checkboxes').innerHTML = checkA;
             document.getElementById('team-b-checkboxes').innerHTML = checkB;
 
-            // Liste des matchs modifiables/supprimables
             renderAdminMatchesList();
         }
 
@@ -360,7 +356,6 @@
                 html = '<p>Aucun match enregistré ce mois-ci.</p>';
             } else {
                 [...matches].reverse().forEach((m, index) => {
-                    // Calculer l'index réel dans le tableau global (puisqu'on inverse l'affichage)
                     let realIndex = matches.length - 1 - index;
                     html += `<div style="display:flex; justify-content:space-between; align-items:center; background:white; border:1px solid #ddd; padding:0.5rem; margin-bottom:0.5rem; border-radius:4px;">
                         <span><strong>(${m.scoreA})</strong> ${m.teamA.join(', ')} vs ${m.teamB.join(', ')} <strong>(${m.scoreB})</strong></span>
