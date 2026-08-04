@@ -171,6 +171,36 @@
             border-radius: 4px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
+
+        .prizes-box {
+            background: linear-gradient(135deg, #1b4d2e, #2d6a4f);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .prizes-box h3 {
+            margin-top: 0;
+            color: var(--accent-color);
+        }
+
+        .prizes-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .prizes-list li {
+            padding: 0.5rem 0;
+            font-size: 1.05rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .prizes-list li:last-child {
+            border-bottom: none;
+        }
     </style>
 </head>
 <body>
@@ -214,6 +244,16 @@
             <div class="home-card">
                 <h3>⚙️ 4. Espace Administrateur</h3>
                 <p>Réservé à la saisie des scores des matchs de la soirée, à la gestion de la liste des joueurs et à la clôture des mois pour lancer de nouvelles saisons.</p>
+            </div>
+
+            <!-- Encadré des prix -->
+            <div class="prizes-box">
+                <h3>🎁 À gagner sur le podium individuel ce mois-ci :</h3>
+                <ul class="prizes-list">
+                    <li>🏆 <strong>1ère place :</strong> Une magnifique coupe !</li>
+                    <li>🍷 <strong>2ème place :</strong> Une bouteille de vin rouge</li>
+                    <li>🧃 <strong>3ème place :</strong> Une bouteille de jus de fruit</li>
+                </ul>
             </div>
             
             <p style="text-align: center; margin-top: 2rem; font-style: italic; color: var(--primary-color);">Bon tournoi à toutes et à tous, et que le meilleur gagne ! 🐖🪵</p>
