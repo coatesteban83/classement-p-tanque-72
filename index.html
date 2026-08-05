@@ -473,7 +473,6 @@
             listHtml += '</ul>';
             document.getElementById('players-list-admin').innerHTML = listHtml;
 
-            // Gestion de la suppression des joueurs générée dynamiquement
             document.querySelectorAll('.delete-player-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     removePlayer(e.target.getAttribute('data-name'));
@@ -514,7 +513,7 @@
         }
 
         async function deleteMatch(id) {
-            if(confirm("Voulez-vous vraiment supprimer ce match ? (Ses points seront retirés des classements)")) {
+            if(confirm("Voulez-vous vraiment supprimer ce match ?")) {
                 try {
                     await deleteDoc(doc(db, "matches", id));
                     matches = matches.filter(m => m.id !== id);
@@ -527,6 +526,7 @@
         }
 
         async function saveMatch() {
+            console.log("Tentative d'enregistrement du match...");
             const teamAChecked = Array.from(document.querySelectorAll('input[name="teamA"]:checked')).map(cb => cb.value);
             const teamBChecked = Array.from(document.querySelectorAll('input[name="teamB"]:checked')).map(cb => cb.value);
             const scoreA = parseInt(document.getElementById('score-a').value) || 0;
@@ -560,9 +560,10 @@
                 document.getElementById('score-a').value = 13;
                 document.getElementById('score-b').value = 5;
                 document.querySelectorAll('input[name="teamA"], input[name="teamB"]').forEach(cb => cb.checked = false);
-                renderAdminMatchesList();
+                renderAdminPanel();
             } catch (e) {
-                console.error("Erreur enregistrement match : ", e);
+                console.error("Erreur critique lors de l'enregistrement Firebase :", e);
+                alert("Erreur d'enregistrement (Vérifiez la console F12) : " + e.message);
             }
         }
 
@@ -710,14 +711,12 @@
 
         // --- Attachement des écouteurs d'événements au chargement ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Navigation par onglets
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     switchTab(e.target.getAttribute('data-tab'), e.target);
                 });
             });
 
-            // Boutons d'administration
             document.getElementById('login-btn').addEventListener('click', loginAdmin);
             document.getElementById('add-player-btn').addEventListener('click', addPlayer);
             document.getElementById('save-match-btn').addEventListener('click', saveMatch);
