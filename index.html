@@ -621,5 +621,23 @@
         }
         
 </script>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-analytics.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAE0MZjhiLJKIcroEX65ugEu-NorS-e6FQ",
+        authDomain: "petanque-challenge-72.firebaseapp.com",
+        projectId: "petanque-challenge-72",
+        storageBucket: "petanque-challenge-72.firebasestorage.app",
+        messagingSenderId: "226690990975",
+        appId: "1:226690990975:web:c8bfaa375c564b73a1904a",
+        measurementId: "G-3TM69E06SZ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+</script>
 </body>
 </html>
