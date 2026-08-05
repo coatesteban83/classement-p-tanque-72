@@ -162,7 +162,6 @@
             font-size: 0.9rem;
         }
 
-        /* Styles spécifiques pour la page d'accueil */
         .home-card {
             background: #fdfdfd;
             border-left: 5px solid var(--accent-color);
@@ -213,40 +212,39 @@
     <div class="container">
         <!-- Boutons de navigation -->
         <div class="nav-tabs">
-            <button class="tab-btn active" onclick="switchTab('home')">Accueil</button>
-            <button class="tab-btn" onclick="switchTab('indiv')">Individuel</button>
-            <button class="tab-btn" onclick="switchTab('teams')">Équipes</button>
-            <button class="tab-btn" onclick="switchTab('history')">Matchs du Mois</button>
-            <button class="tab-btn" onclick="switchTab('archives')">Archives Mois</button>
-            <button class="tab-btn" onclick="switchTab('admin')">Admin</button>
+            <button class="tab-btn active" onclick="switchTab(event, 'home')">Accueil</button>
+            <button class="tab-btn" onclick="switchTab(event, 'indiv')">Individuel</button>
+            <button class="tab-btn" onclick="switchTab(event, 'teams')">Équipes</button>
+            <button class="tab-btn" onclick="switchTab(event, 'history')">Matchs du Mois</button>
+            <button class="tab-btn" onclick="switchTab(event, 'archives')">Archives Mois</button>
+            <button class="tab-btn" onclick="switchTab(event, 'admin')">Admin</button>
         </div>
 
         <!-- Onglet 0: Accueil -->
         <div id="home" class="tab-content active">
             <h2>Bienvenue sur l'espace officiel du Challenge de Pétanque ! 🎯</h2>
-            <p>Cet outil a été conçu pour suivre en temps réel les performances de notre groupe tout au long du mois. Que vous soyez pointeur, tireur ou simple amateur de bonne ambiance au boulodrome, voici ce que vous trouverez sur ce site :</p>
+            <p>Cet outil a été conçu pour suivre en temps réel les performances de notre groupe tout au long du mois.</p>
             
             <div class="home-card">
                 <h3>📊 1. Le Classement Individuel</h3>
-                <p>Cumulez le maximum de points au fil des parties jouées pour décrocher la première place du classement individuel du mois.</p>
+                <p>Cumulez le maximum de points au fil des parties jouées.</p>
             </div>
 
             <div class="home-card">
                 <h3>👥 2. Le Classement par Équipes</h3>
-                <p>Suivez les performances des duos et trios formés au gré des soirées et découvrez quelle association de joueurs s'avère être la redoutable reine de la pétanque.</p>
+                <p>Suivez les performances des duos et trios formés au gré des soirées.</p>
             </div>
 
             <div class="home-card">
                 <h3>📜 3. L'Historique du Mois & Archives</h3>
-                <p>Retrouvez le détail de toutes les parties disputées récemment, ainsi que les podiums des mois précédents pour garder une trace de vos exploits passés.</p>
+                <p>Retrouvez le détail de toutes les parties disputées.</p>
             </div>
 
             <div class="home-card">
                 <h3>⚙️ 4. Espace Administrateur</h3>
-                <p>Réservé à la saisie des scores des matchs de la soirée, à la gestion de la liste des joueurs et à la clôture des mois pour lancer de nouvelles saisons.</p>
+                <p>Réservé à la saisie des scores et à la gestion des joueurs.</p>
             </div>
 
-            <!-- Encadré des prix -->
             <div class="prizes-box">
                 <h3>🎁 À gagner sur le podium individuel ce mois-ci :</h3>
                 <ul class="prizes-list">
@@ -255,14 +253,11 @@
                     <li>🧃 <strong>3ème place :</strong> Une bouteille de jus de fruit</li>
                 </ul>
             </div>
-            
-            <p style="text-align: center; margin-top: 2rem; font-style: italic; color: var(--primary-color);">Bon tournoi à toutes et à tous, et que le meilleur gagne ! 🐖🪵</p>
         </div>
 
         <!-- Onglet 1: Individuel -->
         <div id="indiv" class="tab-content">
             <h2>Classement Individuel du Mois</h2>
-            <p>Total des points marqués cumulés sur toutes les parties du mois en cours.</p>
             <table>
                 <thead>
                     <tr>
@@ -279,7 +274,6 @@
         <!-- Onglet 2: Équipes -->
         <div id="teams" class="tab-content">
             <h2>Classement par Équipes (Associations)</h2>
-            <p>Classement des duos/trios formés au fil des soirées du mois.</p>
             <table>
                 <thead>
                     <tr>
@@ -302,7 +296,6 @@
         <!-- Onglet 4: Archives des Mois -->
         <div id="archives" class="tab-content">
             <h2>Archives des Mois Précédents</h2>
-            <p>Retrouvez ici les podiums et l'historique des anciens mois clôturés.</p>
             <div id="archives-list"></div>
         </div>
 
@@ -320,7 +313,7 @@
                 <h3>1. Gérer la liste des joueurs</h3>
                 <div style="display: flex; gap: 0.5rem;">
                     <input type="text" id="new-player-name" placeholder="Nom du joueur">
-                    <button class="action-btn" style="margin-top: 0.5rem;" onclick="addPlayer()">Ajouter</button>
+                    <button class="action-btn" style="margin-top: 0.5rem;" onclick="addPlayerFirestore()">Ajouter</button>
                 </div>
                 <div id="players-list-admin" style="margin: 1rem 0;"></div>
 
@@ -329,7 +322,6 @@
                 <h3>2. Enregistrer un match de la soirée</h3>
                 <div class="match-form-box">
                     <h4>Équipe A</h4>
-                    <label>Joueurs :</label>
                     <div id="team-a-checkboxes" class="players-checkboxes"></div>
                     <label>Score Équipe A :</label>
                     <input type="number" id="score-a" value="13" min="0" max="13">
@@ -337,47 +329,54 @@
 
                 <div class="match-form-box">
                     <h4>Équipe B</h4>
-                    <label>Joueurs :</label>
                     <div id="team-b-checkboxes" class="players-checkboxes"></div>
                     <label>Score Équipe B :</label>
                     <input type="number" id="score-b" value="5" min="0" max="13">
                 </div>
 
-                <button class="action-btn" onclick="saveMatch()">Enregistrer le match</button>
+                <button class="action-btn" onclick="saveMatchFirestore()">Enregistrer le match</button>
                 
                 <hr style="margin: 2rem 0;">
 
                 <h3>3. Correction / Modification des matchs du mois</h3>
-                <p>En cas d'erreur de saisie, vous pouvez supprimer un match ci-dessous (ce qui annulera ses points et vous permettra de le ressaisir proprement).</p>
                 <div id="admin-matches-list" style="max-height: 250px; overflow-y: auto; border: 1px solid #ddd; padding: 0.5rem; background: #fafafa;"></div>
 
                 <hr style="margin: 2rem 0;">
 
                 <h3>4. Clôturer le mois</h3>
-                <p>Sauvegarde les classements actuels dans les archives et remet les compteurs à zéro pour un nouveau mois.</p>
-                <button class="action-btn" style="background-color: #e67e22;" onclick="closeMonth()">Clôturer et archiver ce mois</button>
-
-                <button class="action-btn" style="background-color: #c0392b; margin-top: 2rem;" onclick="resetData()">Tout réinitialiser (usine)</button>
+                <button class="action-btn" style="background-color: #e67e22;" onclick="closeMonthFirestore()">Clôturer et archiver ce mois</button>
             </div>
         </div>
     </div>
 
-    <script>
-        let players = JSON.parse(localStorage.getItem('petanque_players')) || [
-            "Joueur 1", "Joueur 2", "Joueur 3", "Joueur 4", 
-            "Joueur 5", "Joueur 6", "Joueur 7", "Joueur 8",
-            "Joueur 9", "Joueur 10", "Joueur 11", "Joueur 12", 
-            "Joueur 13", "Joueur 14", "Joueur 15", "Joueur 16"
-        ];
-        let matches = JSON.parse(localStorage.getItem('petanque_matches')) || [];
-        let archives = JSON.parse(localStorage.getItem('petanque_archives')) || [];
+    <!-- Script Application & Firebase en Temps Réel -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-        function switchTab(tabId) {
+        const firebaseConfig = {
+            apiKey: "AIzaSyAE0MZjhiLJKIcroEX65ugEu-NorS-e6FQ",
+            authDomain: "petanque-challenge-72.firebaseapp.com",
+            projectId: "petanque-challenge-72",
+            storageBucket: "petanque-challenge-72.firebasestorage.app",
+            messagingSenderId: "226690990975",
+            appId: "1:226690990975:web:7771334473fee0eda1904a",
+            measurementId: "G-1SXWW1SF10"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let players = [];
+        let matches = [];
+        let archives = [];
+
+        window.switchTab = function(event, tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             
             document.getElementById(tabId).classList.add('active');
-            event.target.classList.add('active');
+            event.currentTarget.classList.add('active');
 
             if(tabId === 'indiv') updateIndivTable();
             if(tabId === 'teams') updateTeamsTable();
@@ -386,7 +385,7 @@
             if(tabId === 'admin') renderAdminPanel();
         }
 
-        function loginAdmin() {
+        window.loginAdmin = function() {
             const pass = document.getElementById('admin-pass').value;
             if(pass === 'petanque2026') {
                 document.getElementById('login-section').style.display = 'none';
@@ -397,32 +396,117 @@
             }
         }
 
-        function addPlayer() {
+        async function loadDataFromFirestore() {
+            try {
+                // Chargement des joueurs
+                const pSnap = await getDocs(collection(db, "players"));
+                if (!pSnap.empty) {
+                    players = pSnap.docs.map(docSnap => ({ id: docSnap.id, name: docSnap.data().name })).map(p => p.name);
+                } else {
+                    players = ["Joueur 1", "Joueur 2", "Joueur 3", "Joueur 4", "Joueur 5", "Joueur 6", "Joueur 7", "Joueur 8"];
+                }
+
+                // Chargement des matchs
+                const mSnap = await getDocs(collection(db, "matches"));
+                matches = mSnap.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
+
+                // Chargement des archives
+                const aSnap = await getDocs(collection(db, "archives"));
+                archives = aSnap.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
+
+                updateIndivTable();
+                updateTeamsTable();
+            } catch (e) {
+                console.error("Erreur de chargement Firestore : ", e);
+            }
+        }
+
+        window.addPlayerFirestore = async function() {
             const name = document.getElementById('new-player-name').value.trim();
             if(name && !players.includes(name)) {
-                players.push(name);
+                await addDoc(collection(db, "players"), { name: name });
                 document.getElementById('new-player-name').value = '';
-                saveToLocalStorage();
+                await loadDataFromFirestore();
                 renderAdminPanel();
             }
         }
 
-        function removePlayer(name) {
-            players = players.filter(p => p !== name);
-            saveToLocalStorage();
+        window.removePlayerFirestore = async function(name) {
+            const pSnap = await getDocs(collection(db, "players"));
+            let docId = null;
+            pSnap.forEach(d => { if(d.data().name === name) docId = d.id; });
+            if(docId) {
+                await deleteDoc(doc(db, "players", docId));
+                await loadDataFromFirestore();
+                renderAdminPanel();
+            }
+        }
+
+        window.saveMatchFirestore = async function() {
+            const teamAChecked = Array.from(document.querySelectorAll('input[name="teamA"]:checked')).map(cb => cb.value);
+            const teamBChecked = Array.from(document.querySelectorAll('input[name="teamB"]:checked')).map(cb => cb.value);
+            const scoreA = parseInt(document.getElementById('score-a').value) || 0;
+            const scoreB = parseInt(document.getElementById('score-b').value) || 0;
+
+            if(teamAChecked.length === 0 || teamBChecked.length === 0) {
+                alert("Sélectionnez au moins un joueur par équipe !");
+                return;
+            }
+
+            const match = {
+                date: new Date().toLocaleDateString(),
+                teamA: teamAChecked,
+                scoreA: scoreA,
+                teamB: teamBChecked,
+                scoreB: scoreB
+            };
+
+            await addDoc(collection(db, "matches"), match);
+            await loadDataFromFirestore();
+            alert("Match enregistré et synchronisé en temps réel !");
+            document.querySelectorAll('input[name="teamA"], input[name="teamB"]').forEach(cb => cb.checked = false);
             renderAdminPanel();
+        }
+
+        window.deleteMatchFirestore = async function(matchId) {
+            if(confirm("Voulez-vous vraiment supprimer ce match ?")) {
+                await deleteDoc(doc(db, "matches", matchId));
+                await loadDataFromFirestore();
+                renderAdminPanel();
+            }
+        }
+
+        window.closeMonthFirestore = async function() {
+            if(matches.length === 0) {
+                alert("Aucun match à archiver !");
+                return;
+            }
+            let monthName = prompt("Entrez le nom du mois (ex: Février 2026) :");
+            if(!monthName) return;
+
+            const archiveData = {
+                month: monthName,
+                indiv: getCalculatedIndiv(),
+                teams: getCalculatedTeams()
+            };
+
+            await addDoc(collection(db, "archives"), archiveData);
+            for(let m of matches) {
+                await deleteDoc(doc(db, "matches", m.id));
+            }
+            await loadDataFromFirestore();
+            alert("Mois clôturé et archivé !");
         }
 
         function renderAdminPanel() {
             let listHtml = '<strong>Joueurs inscrits (' + players.length + ') :</strong><ul>';
             players.forEach(p => {
-                listHtml += `<li>${p} <button onclick="removePlayer('${p}')" style="color:red; border:none; background:none; cursor:pointer;">[Supprimer]</button></li>`;
+                listHtml += `<li>${p} <button onclick="removePlayerFirestore('${p}')" style="color:red; border:none; background:none; cursor:pointer;">[Supprimer]</button></li>`;
             });
             listHtml += '</ul>';
             document.getElementById('players-list-admin').innerHTML = listHtml;
 
-            let checkA = '';
-            let checkB = '';
+            let checkA = '', checkB = '';
             players.forEach(p => {
                 checkA += `<label class="player-tag"><input type="checkbox" name="teamA" value="${p}"> ${p}</label>`;
                 checkB += `<label class="player-tag"><input type="checkbox" name="teamB" value="${p}"> ${p}</label>`;
@@ -438,91 +522,14 @@
             if(matches.length === 0) {
                 html = '<p>Aucun match enregistré ce mois-ci.</p>';
             } else {
-                [...matches].reverse().forEach((m, index) => {
-                    let realIndex = matches.length - 1 - index;
+                matches.forEach((m) => {
                     html += `<div style="display:flex; justify-content:space-between; align-items:center; background:white; border:1px solid #ddd; padding:0.5rem; margin-bottom:0.5rem; border-radius:4px;">
                         <span><strong>(${m.scoreA})</strong> ${m.teamA.join(', ')} vs ${m.teamB.join(', ')} <strong>(${m.scoreB})</strong></span>
-                        <button onclick="deleteMatch(${realIndex})" style="background:#c0392b; color:white; border:none; padding:0.3rem 0.6rem; border-radius:3px; cursor:pointer;">Supprimer</button>
+                        <button onclick="deleteMatchFirestore('${m.id}')" style="background:#c0392b; color:white; border:none; padding:0.3rem 0.6rem; border-radius:3px; cursor:pointer;">Supprimer</button>
                     </div>`;
                 });
             }
             document.getElementById('admin-matches-list').innerHTML = html;
-        }
-
-        function deleteMatch(index) {
-            if(confirm("Voulez-vous vraiment supprimer ce match ? (Ses points seront retirés des classements)")) {
-                matches.splice(index, 1);
-                saveToLocalStorage();
-                renderAdminPanel();
-                alert("Match supprimé avec succès.");
-            }
-        }
-
-        function saveMatch() {
-            const teamAChecked = Array.from(document.querySelectorAll('input[name="teamA"]:checked')).map(cb => cb.value);
-            const teamBChecked = Array.from(document.querySelectorAll('input[name="teamB"]:checked')).map(cb => cb.value);
-            const scoreA = parseInt(document.getElementById('score-a').value) || 0;
-            const scoreB = parseInt(document.getElementById('score-b').value) || 0;
-
-            if(teamAChecked.length === 0 || teamBChecked.length === 0) {
-                alert("Sélectionnez au moins un joueur par équipe !");
-                return;
-            }
-
-            if(teamAChecked.some(p => teamBChecked.includes(p))) {
-                alert("Un joueur ne peut pas être dans les deux équipes en même temps !");
-                return;
-            }
-
-            const match = {
-                date: new Date().toLocaleDateString(),
-                teamA: teamAChecked,
-                scoreA: scoreA,
-                teamB: teamBChecked,
-                scoreB: scoreB
-            };
-
-            matches.push(match);
-            saveToLocalStorage();
-            alert("Match enregistré avec succès !");
-            
-            document.getElementById('score-a').value = 13;
-            document.getElementById('score-b').value = 5;
-            document.querySelectorAll('input[name="teamA"], input[name="teamB"]').forEach(cb => cb.checked = false);
-            renderAdminMatchesList();
-        }
-
-        function closeMonth() {
-            if(matches.length === 0) {
-                alert("Aucun match à archiver pour ce mois !");
-                return;
-            }
-            let monthName = prompt("Entrez le nom ou le mois de la saison (ex: Février 2026) :");
-            if(!monthName) return;
-
-            const archiveData = {
-                month: monthName,
-                indiv: getCalculatedIndiv(),
-                teams: getCalculatedTeams()
-            };
-
-            archives.push(archiveData);
-            matches = []; 
-            localStorage.setItem('petanque_archives', JSON.stringify(archives));
-            saveToLocalStorage();
-            alert("Mois clôturé et archivé avec succès ! Nouveau mois ouvert.");
-        }
-
-        function saveToLocalStorage() {
-            localStorage.setItem('petanque_players', JSON.stringify(players));
-            localStorage.setItem('petanque_matches', JSON.stringify(matches));
-        }
-
-        function resetData() {
-            if(confirm("Êtes-vous sûr de vouloir tout effacer (joueurs, matchs et archives) ?")) {
-                localStorage.clear();
-                location.reload();
-            }
         }
 
         function getCalculatedIndiv() {
@@ -562,12 +569,7 @@
             let sortedPlayers = getCalculatedIndiv();
             let html = '';
             sortedPlayers.forEach((item, index) => {
-                html += `<tr>
-                    <td>#${index + 1}</td>
-                    <td><strong>${item.name}</strong></td>
-                    <td>${item.played}</td>
-                    <td><strong>${item.points} pts</strong></td>
-                </tr>`;
+                html += `<tr><td>#${index + 1}</td><td><strong>${item.name}</strong></td><td>${item.played}</td><td><strong>${item.points} pts</strong></td></tr>`;
             });
             document.getElementById('indiv-table-body').innerHTML = html || '<tr><td colspan="4">Aucun match enregistré.</td></tr>';
         }
@@ -576,26 +578,17 @@
             let sortedTeams = getCalculatedTeams();
             let html = '';
             sortedTeams.forEach((item, index) => {
-                html += `<tr>
-                    <td>#${index + 1}</td>
-                    <td><strong>${item.names}</strong></td>
-                    <td>${item.played}</td>
-                    <td><strong>${item.points} pts</strong></td>
-                </tr>`;
+                html += `<tr><td>#${index + 1}</td><td><strong>${item.names}</strong></td><td>${item.played}</td><td><strong>${item.points} pts</strong></td></tr>`;
             });
             document.getElementById('teams-table-body').innerHTML = html || '<tr><td colspan="4">Aucune équipe enregistrée.</td></tr>';
         }
 
         function updateHistoryList() {
             let html = '';
-            [...matches].reverse().forEach((m) => {
+            matches.forEach((m) => {
                 html += `<div style="background:#f9f9f9; border:1px solid #ddd; padding:1rem; margin-bottom:0.5rem; border-radius:5px;">
                     <small style="color:gray;">Match du ${m.date}</small>
-                    <p style="margin: 0.5rem 0 0 0;">
-                        <strong>(${m.scoreA})</strong> ${m.teamA.join(', ')} 
-                        <span style="color:var(--accent-color); font-weight:bold;">vs</span> 
-                        ${m.teamB.join(', ')} <strong>(${m.scoreB})</strong>
-                    </p>
+                    <p style="margin: 0.5rem 0 0 0;"><strong>(${m.scoreA})</strong> ${m.teamA.join(', ')} <span style="color:var(--accent-color); font-weight:bold;">vs</span> ${m.teamB.join(', ')} <strong>(${m.scoreB})</strong></p>
                 </div>`;
             });
             document.getElementById('history-list').innerHTML = html || '<p>Aucun historique pour ce mois.</p>';
@@ -606,11 +599,10 @@
             if(archives.length === 0) {
                 html = '<p>Aucun mois archivé pour le moment.</p>';
             } else {
-                [...archives].reverse().forEach(arc => {
+                archives.forEach(arc => {
                     html += `<div style="background:#fdfefe; border:2px solid #1b4d2e; padding:1rem; margin-bottom:1.5rem; border-radius:8px;">
                         <h3 style="margin-top:0; color:var(--primary-color);">📅 Mois : ${arc.month}</h3>
-                        <h4>Podium Individuel</h4>
-                        <ul>`;
+                        <h4>Podium Individuel</h4><ul>`;
                     arc.indiv.slice(0, 3).forEach((p, idx) => {
                         html += `<li>#${idx+1} <strong>${p.name}</strong> (${p.points} pts)</li>`;
                     });
@@ -619,28 +611,9 @@
             }
             document.getElementById('archives-list').innerHTML = html;
         }
-    <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyAE0MZjhiLJKIcroEX65ugEu-NorS-e6FQ",
-    authDomain: "petanque-challenge-72.firebaseapp.com",
-    projectId: "petanque-challenge-72",
-    storageBucket: "petanque-challenge-72.firebasestorage.app",
-    messagingSenderId: "226690990975",
-    appId: "1:226690990975:web:7771334473fee0eda1904a",
-    measurementId: "G-1SXWW1SF10"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
+        // Chargement initial des données au démarrage de la page
+        loadDataFromFirestore();
+    </script>
 </body>
 </html>
