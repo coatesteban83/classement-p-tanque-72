@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Classement Pétanque - Tournoi du Mois</title>
+    <!-- Chargement de la bibliothèque Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --primary-color: #1b4d2e; /* Vert terrain de pétanque */
-            --accent-color: #e67e22; /* Couleur cochonnet / sable */
-            --bg-color: #d4ebd0;     /* Vert clair/pastel ambiance boulodrome */
+            --primary-color: #1b4d2e;
+            --accent-color: #e67e22;
+            --bg-color: #d4ebd0;
             --card-bg: #ffffff;
             --text-color: #333333;
         }
@@ -105,7 +107,6 @@
             background-color: #f9f9f9;
         }
 
-        /* Formulaire Admin */
         .admin-login, .admin-panel {
             background: var(--card-bg);
             padding: 1.5rem;
@@ -162,7 +163,6 @@
             font-size: 0.9rem;
         }
 
-        /* Styles spécifiques pour la page d'accueil */
         .home-card {
             background: #fdfdfd;
             border-left: 5px solid var(--accent-color);
@@ -198,8 +198,11 @@
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        .prizes-list li:last-child {
-            border-bottom: none;
+        #sync-status {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 1rem;
         }
     </style>
 </head>
@@ -211,42 +214,21 @@
     </header>
 
     <div class="container">
-        <!-- Boutons de navigation -->
+        <div id="sync-status">🔄 Connexion à la base de données...</div>
+
         <div class="nav-tabs">
-            <button class="tab-btn active" onclick="switchTab('home')">Accueil</button>
-            <button class="tab-btn" onclick="switchTab('indiv')">Individuel</button>
-            <button class="tab-btn" onclick="switchTab('teams')">Équipes</button>
-            <button class="tab-btn" onclick="switchTab('history')">Matchs du Mois</button>
-            <button class="tab-btn" onclick="switchTab('archives')">Archives Mois</button>
-            <button class="tab-btn" onclick="switchTab('admin')">Admin</button>
+            <button class="tab-btn active" onclick="switchTab('home', event)">Accueil</button>
+            <button class="tab-btn" onclick="switchTab('indiv', event)">Individuel</button>
+            <button class="tab-btn" onclick="switchTab('teams', event)">Équipes</button>
+            <button class="tab-btn" onclick="switchTab('history', event)">Matchs du Mois</button>
+            <button class="tab-btn" onclick="switchTab('archives', event)">Archives Mois</button>
+            <button class="tab-btn" onclick="switchTab('admin', event)">Admin</button>
         </div>
 
-        <!-- Onglet 0: Accueil -->
+        <!-- Onglet Accueil -->
         <div id="home" class="tab-content active">
             <h2>Bienvenue sur l'espace officiel du Challenge de Pétanque ! 🎯</h2>
-            <p>Cet outil a été conçu pour suivre en temps réel les performances de notre groupe tout au long du mois. Que vous soyez pointeur, tireur ou simple amateur de bonne ambiance au boulodrome, voici ce que vous trouverez sur ce site :</p>
-            
-            <div class="home-card">
-                <h3>📊 1. Le Classement Individuel</h3>
-                <p>Cumulez le maximum de points au fil des parties jouées pour décrocher la première place du classement individuel du mois.</p>
-            </div>
-
-            <div class="home-card">
-                <h3>👥 2. Le Classement par Équipes</h3>
-                <p>Suivez les performances des duos et trios formés au gré des soirées et découvrez quelle association de joueurs s'avère être la redoutable reine de la pétanque.</p>
-            </div>
-
-            <div class="home-card">
-                <h3>📜 3. L'Historique du Mois & Archives</h3>
-                <p>Retrouvez le détail de toutes les parties disputées récemment, ainsi que les podiums des mois précédents pour garder une trace de vos exploits passés.</p>
-            </div>
-
-            <div class="home-card">
-                <h3>⚙️ 4. Espace Administrateur</h3>
-                <p>Réservé à la saisie des scores des matchs de la soirée, à la gestion de la liste des joueurs et à la clôture des mois pour lancer de nouvelles saisons.</p>
-            </div>
-
-            <!-- Encadré des prix -->
+            <p>Cet outil suit en temps réel les performances de notre groupe.</p>
             <div class="prizes-box">
                 <h3>🎁 À gagner sur le podium individuel ce mois-ci :</h3>
                 <ul class="prizes-list">
@@ -255,58 +237,43 @@
                     <li>🧃 <strong>3ème place :</strong> Une bouteille de jus de fruit</li>
                 </ul>
             </div>
-            
-            <p style="text-align: center; margin-top: 2rem; font-style: italic; color: var(--primary-color);">Bon tournoi à toutes et à tous, et que le meilleur gagne ! 🐖🪵</p>
         </div>
 
-        <!-- Onglet 1: Individuel -->
+        <!-- Onglet Individuel -->
         <div id="indiv" class="tab-content">
             <h2>Classement Individuel du Mois</h2>
-            <p>Total des points marqués cumulés sur toutes les parties du mois en cours.</p>
             <table>
                 <thead>
-                    <tr>
-                        <th>Rang</th>
-                        <th>Joueur</th>
-                        <th>Parties</th>
-                        <th>Points</th>
-                    </tr>
+                    <tr><th>Rang</th><th>Joueur</th><th>Parties</th><th>Points</th></tr>
                 </thead>
                 <tbody id="indiv-table-body"></tbody>
             </table>
         </div>
 
-        <!-- Onglet 2: Équipes -->
+        <!-- Onglet Équipes -->
         <div id="teams" class="tab-content">
-            <h2>Classement par Équipes (Associations)</h2>
-            <p>Classement des duos/trios formés au fil des soirées du mois.</p>
+            <h2>Classement par Équipes</h2>
             <table>
                 <thead>
-                    <tr>
-                        <th>Rang</th>
-                        <th>Équipe (Joueurs)</th>
-                        <th>Matchs</th>
-                        <th>Points</th>
-                    </tr>
+                    <tr><th>Rang</th><th>Équipe (Joueurs)</th><th>Matchs</th><th>Points</th></tr>
                 </thead>
                 <tbody id="teams-table-body"></tbody>
             </table>
         </div>
 
-        <!-- Onglet 3: Historique Matchs -->
+        <!-- Onglet Historique -->
         <div id="history" class="tab-content">
             <h2>Historique des Matchs du Mois</h2>
             <div id="history-list"></div>
         </div>
 
-        <!-- Onglet 4: Archives des Mois -->
+        <!-- Onglet Archives -->
         <div id="archives" class="tab-content">
             <h2>Archives des Mois Précédents</h2>
-            <p>Retrouvez ici les podiums et l'historique des anciens mois clôturés.</p>
             <div id="archives-list"></div>
         </div>
 
-        <!-- Onglet 5: Admin -->
+        <!-- Onglet Admin -->
         <div id="admin" class="tab-content">
             <div id="login-section" class="admin-login">
                 <h2>Connexion Administrateur</h2>
@@ -329,7 +296,6 @@
                 <h3>2. Enregistrer un match de la soirée</h3>
                 <div class="match-form-box">
                     <h4>Équipe A</h4>
-                    <label>Joueurs :</label>
                     <div id="team-a-checkboxes" class="players-checkboxes"></div>
                     <label>Score Équipe A :</label>
                     <input type="number" id="score-a" value="13" min="0" max="13">
@@ -337,7 +303,6 @@
 
                 <div class="match-form-box">
                     <h4>Équipe B</h4>
-                    <label>Joueurs :</label>
                     <div id="team-b-checkboxes" class="players-checkboxes"></div>
                     <label>Score Équipe B :</label>
                     <input type="number" id="score-b" value="5" min="0" max="13">
@@ -348,42 +313,96 @@
                 <hr style="margin: 2rem 0;">
 
                 <h3>3. Correction / Modification des matchs du mois</h3>
-                <p>En cas d'erreur de saisie, vous pouvez supprimer un match ci-dessous (ce qui annulera ses points et vous permettra de le ressaisir proprement).</p>
                 <div id="admin-matches-list" style="max-height: 250px; overflow-y: auto; border: 1px solid #ddd; padding: 0.5rem; background: #fafafa;"></div>
 
                 <hr style="margin: 2rem 0;">
 
                 <h3>4. Clôturer le mois</h3>
-                <p>Sauvegarde les classements actuels dans les archives et remet les compteurs à zéro pour un nouveau mois.</p>
                 <button class="action-btn" style="background-color: #e67e22;" onclick="closeMonth()">Clôturer et archiver ce mois</button>
-
-                <button class="action-btn" style="background-color: #c0392b; margin-top: 2rem;" onclick="resetData()">Tout réinitialiser (usine)</button>
+                <button class="action-btn" style="background-color: #c0392b; margin-top: 2rem;" onclick="resetData()">Tout réinitialiser</button>
             </div>
         </div>
     </div>
 
     <script>
-        let players = JSON.parse(localStorage.getItem('petanque_players')) || [
-            "Joueur 1", "Joueur 2", "Joueur 3", "Joueur 4", 
-            "Joueur 5", "Joueur 6", "Joueur 7", "Joueur 8",
-            "Joueur 9", "Joueur 10", "Joueur 11", "Joueur 12", 
-            "Joueur 13", "Joueur 14", "Joueur 15", "Joueur 16"
-        ];
-        let matches = JSON.parse(localStorage.getItem('petanque_matches')) || [];
-        let archives = JSON.parse(localStorage.getItem('petanque_archives')) || [];
+        // REMPLACEZ CES DEUX LIGNES PAR VOS IDENTIFIANTS SUPABASE :
+        const SUPABASE_URL = 'https://cymnwtfahhgeodmpdshy.supabase.co/rest/v1/';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5bW53dGZhaGhnZW9kbXBkc2h5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYwMDg2MzcsImV4cCI6MjEwMTU4NDYzN30.MQlDahIq1XWvv9sIEnHxEgmV6nDXQJ4oQYhQnw0az00';
 
-        function switchTab(tabId) {
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let appData = {
+            players: ["Joueur 1", "Joueur 2", "Joueur 3", "Joueur 4", "Joueur 5", "Joueur 6", "Joueur 7", "Joueur 8"],
+            matches: [],
+            archives: []
+        };
+
+        // Charger les données depuis Supabase au démarrage
+        async function loadData() {
+            try {
+                let { data, error } = await supabaseClient
+                    .from('app_data')
+                    .select('payload')
+                    .eq('id', 'main_state')
+                    .single();
+
+                if (data && data.payload) {
+                    appData = data.payload;
+                } else {
+                    // Si la ligne n'existe pas encore, on l'initialise
+                    await saveDataToCloud();
+                }
+                document.getElementById('sync-status').innerText = '✅ Synchronisé en temps réel avec le cloud';
+                refreshActiveTab();
+            } catch (err) {
+                document.getElementById('sync-status').innerText = '⚠️ Erreur de connexion cloud';
+                console.error(err);
+            }
+        }
+
+        // Sauvegarder dans Supabase
+        async function saveDataToCloud() {
+            document.getElementById('sync-status').innerText = '💾 Enregistrement en cours...';
+            const { error } = await supabaseClient
+                .from('app_data')
+                jtUpsert({ id: 'main_state', payload: appData });
+
+            if (!error) {
+                document.getElementById('sync-status').innerText = '✅ Synchronisé en temps réel avec le cloud';
+            } else {
+                document.getElementById('sync-status').innerText = '❌ Erreur de sauvegarde';
+                console.error(error);
+            }
+            refreshActiveTab();
+        }
+
+        // Écouter les changements en temps réel (si un autre utilisateur modifie le site)
+        supabaseClient
+            .channel('public:app_data')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'app_data' }, payload => {
+                if (payload.new && payload.new.payload) {
+                    appData = payload.new.payload;
+                    refreshActiveTab();
+                }
+            })
+            .subscribe();
+
+        function refreshActiveTab() {
+            const activeTab = document.querySelector('.tab-content.active').id;
+            if(activeTab === 'indiv') updateIndivTable();
+            if(activeTab === 'teams') updateTeamsTable();
+            if(activeTab === 'history') updateHistoryList();
+            if(activeTab === 'archives') updateArchivesView();
+            if(activeTab === 'admin') renderAdminPanel();
+        }
+
+        function switchTab(tabId, event) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             
             document.getElementById(tabId).classList.add('active');
             event.target.classList.add('active');
-
-            if(tabId === 'indiv') updateIndivTable();
-            if(tabId === 'teams') updateTeamsTable();
-            if(tabId === 'history') updateHistoryList();
-            if(tabId === 'archives') updateArchivesView();
-            if(tabId === 'admin') renderAdminPanel();
+            refreshActiveTab();
         }
 
         function loginAdmin() {
@@ -399,31 +418,28 @@
 
         function addPlayer() {
             const name = document.getElementById('new-player-name').value.trim();
-            if(name && !players.includes(name)) {
-                players.push(name);
+            if(name && !appData.players.includes(name)) {
+                appData.players.push(name);
                 document.getElementById('new-player-name').value = '';
-                saveToLocalStorage();
-                renderAdminPanel();
+                saveDataToCloud();
             }
         }
 
         function removePlayer(name) {
-            players = players.filter(p => p !== name);
-            saveToLocalStorage();
-            renderAdminPanel();
+            appData.players = appData.players.filter(p => p !== name);
+            saveDataToCloud();
         }
 
         function renderAdminPanel() {
-            let listHtml = '<strong>Joueurs inscrits (' + players.length + ') :</strong><ul>';
-            players.forEach(p => {
+            let listHtml = '<strong>Joueurs inscrits (' + appData.players.length + ') :</strong><ul>';
+            appData.players.forEach(p => {
                 listHtml += `<li>${p} <button onclick="removePlayer('${p}')" style="color:red; border:none; background:none; cursor:pointer;">[Supprimer]</button></li>`;
             });
             listHtml += '</ul>';
             document.getElementById('players-list-admin').innerHTML = listHtml;
 
-            let checkA = '';
-            let checkB = '';
-            players.forEach(p => {
+            let checkA = '', checkB = '';
+            appData.players.forEach(p => {
                 checkA += `<label class="player-tag"><input type="checkbox" name="teamA" value="${p}"> ${p}</label>`;
                 checkB += `<label class="player-tag"><input type="checkbox" name="teamB" value="${p}"> ${p}</label>`;
             });
@@ -435,11 +451,11 @@
 
         function renderAdminMatchesList() {
             let html = '';
-            if(matches.length === 0) {
+            if(appData.matches.length === 0) {
                 html = '<p>Aucun match enregistré ce mois-ci.</p>';
             } else {
-                [...matches].reverse().forEach((m, index) => {
-                    let realIndex = matches.length - 1 - index;
+                [...appData.matches].reverse().forEach((m, index) => {
+                    let realIndex = appData.matches.length - 1 - index;
                     html += `<div style="display:flex; justify-content:space-between; align-items:center; background:white; border:1px solid #ddd; padding:0.5rem; margin-bottom:0.5rem; border-radius:4px;">
                         <span><strong>(${m.scoreA})</strong> ${m.teamA.join(', ')} vs ${m.teamB.join(', ')} <strong>(${m.scoreB})</strong></span>
                         <button onclick="deleteMatch(${realIndex})" style="background:#c0392b; color:white; border:none; padding:0.3rem 0.6rem; border-radius:3px; cursor:pointer;">Supprimer</button>
@@ -450,11 +466,9 @@
         }
 
         function deleteMatch(index) {
-            if(confirm("Voulez-vous vraiment supprimer ce match ? (Ses points seront retirés des classements)")) {
-                matches.splice(index, 1);
-                saveToLocalStorage();
-                renderAdminPanel();
-                alert("Match supprimé avec succès.");
+            if(confirm("Voulez-vous vraiment supprimer ce match ?")) {
+                appData.matches.splice(index, 1);
+                saveDataToCloud();
             }
         }
 
@@ -470,65 +484,49 @@
             }
 
             if(teamAChecked.some(p => teamBChecked.includes(p))) {
-                alert("Un joueur ne peut pas être dans les deux équipes en même temps !");
+                alert("Un joueur ne peut pas être dans les deux équipes !");
                 return;
             }
 
-            const match = {
+            appData.matches.push({
                 date: new Date().toLocaleDateString(),
-                teamA: teamAChecked,
-                scoreA: scoreA,
-                teamB: teamBChecked,
-                scoreB: scoreB
-            };
+                teamA: teamAChecked, scoreA: scoreA,
+                teamB: teamBChecked, scoreB: scoreB
+            });
 
-            matches.push(match);
-            saveToLocalStorage();
-            alert("Match enregistré avec succès !");
-            
-            document.getElementById('score-a').value = 13;
-            document.getElementById('score-b').value = 5;
-            document.querySelectorAll('input[name="teamA"], input[name="teamB"]').forEach(cb => cb.checked = false);
-            renderAdminMatchesList();
+            saveDataToCloud();
+            alert("Match enregistré et synchronisé !");
         }
 
         function closeMonth() {
-            if(matches.length === 0) {
-                alert("Aucun match à archiver pour ce mois !");
+            if(appData.matches.length === 0) {
+                alert("Aucun match à archiver !");
                 return;
             }
-            let monthName = prompt("Entrez le nom ou le mois de la saison (ex: Février 2026) :");
+            let monthName = prompt("Entrez le nom de la saison (ex: Février 2026) :");
             if(!monthName) return;
 
-            const archiveData = {
+            appData.archives.push({
                 month: monthName,
                 indiv: getCalculatedIndiv(),
                 teams: getCalculatedTeams()
-            };
-
-            archives.push(archiveData);
-            matches = []; 
-            localStorage.setItem('petanque_archives', JSON.stringify(archives));
-            saveToLocalStorage();
-            alert("Mois clôturé et archivé avec succès ! Nouveau mois ouvert.");
-        }
-
-        function saveToLocalStorage() {
-            localStorage.setItem('petanque_players', JSON.stringify(players));
-            localStorage.setItem('petanque_matches', JSON.stringify(matches));
+            });
+            appData.matches = [];
+            saveDataToCloud();
+            alert("Mois clôturé et archivé !");
         }
 
         function resetData() {
-            if(confirm("Êtes-vous sûr de vouloir tout effacer (joueurs, matchs et archives) ?")) {
-                localStorage.clear();
-                location.reload();
+            if(confirm("Tout effacer ?")) {
+                appData = { players: ["Joueur 1"], matches: [], archives: [] };
+                saveDataToCloud();
             }
         }
 
         function getCalculatedIndiv() {
             let stats = {};
-            players.forEach(p => { stats[p] = { played: 0, points: 0 }; });
-            matches.forEach(m => {
+            appData.players.forEach(p => { stats[p] = { played: 0, points: 0 }; });
+            appData.matches.forEach(m => {
                 m.teamA.forEach(p => {
                     if(!stats[p]) stats[p] = { played: 0, points: 0 };
                     stats[p].played += 1; stats[p].points += m.scoreA;
@@ -545,7 +543,7 @@
 
         function getCalculatedTeams() {
             let teamStats = {};
-            matches.forEach(m => {
+            appData.matches.forEach(m => {
                 let keyA = [...m.teamA].sort().join(' & ');
                 let keyB = [...m.teamB].sort().join(' & ');
                 if(!teamStats[keyA]) teamStats[keyA] = { played: 0, points: 0 };
@@ -559,58 +557,43 @@
         }
 
         function updateIndivTable() {
-            let sortedPlayers = getCalculatedIndiv();
+            let sorted = getCalculatedIndiv();
             let html = '';
-            sortedPlayers.forEach((item, index) => {
-                html += `<tr>
-                    <td>#${index + 1}</td>
-                    <td><strong>${item.name}</strong></td>
-                    <td>${item.played}</td>
-                    <td><strong>${item.points} pts</strong></td>
-                </tr>`;
+            sorted.forEach((item, index) => {
+                html += `<tr><td>#${index + 1}</td><td><strong>${item.name}</strong></td><td>${item.played}</td><td><strong>${item.points} pts</strong></td></tr>`;
             });
-            document.getElementById('indiv-table-body').innerHTML = html || '<tr><td colspan="4">Aucun match enregistré.</td></tr>';
+            document.getElementById('indiv-table-body').innerHTML = html || '<tr><td colspan="4">Aucun match.</td></tr>';
         }
 
         function updateTeamsTable() {
-            let sortedTeams = getCalculatedTeams();
+            let sorted = getCalculatedTeams();
             let html = '';
-            sortedTeams.forEach((item, index) => {
-                html += `<tr>
-                    <td>#${index + 1}</td>
-                    <td><strong>${item.names}</strong></td>
-                    <td>${item.played}</td>
-                    <td><strong>${item.points} pts</strong></td>
-                </tr>`;
+            sorted.forEach((item, index) => {
+                html += `<tr><td>#${index + 1}</td><td><strong>${item.names}</strong></td><td>${item.played}</td><td><strong>${item.points} pts</strong></td></tr>`;
             });
-            document.getElementById('teams-table-body').innerHTML = html || '<tr><td colspan="4">Aucune équipe enregistrée.</td></tr>';
+            document.getElementById('teams-table-body').innerHTML = html || '<tr><td colspan="4">Aucune équipe.</td></tr>';
         }
 
         function updateHistoryList() {
             let html = '';
-            [...matches].reverse().forEach((m) => {
+            [...appData.matches].reverse().forEach((m) => {
                 html += `<div style="background:#f9f9f9; border:1px solid #ddd; padding:1rem; margin-bottom:0.5rem; border-radius:5px;">
                     <small style="color:gray;">Match du ${m.date}</small>
-                    <p style="margin: 0.5rem 0 0 0;">
-                        <strong>(${m.scoreA})</strong> ${m.teamA.join(', ')} 
-                        <span style="color:var(--accent-color); font-weight:bold;">vs</span> 
-                        ${m.teamB.join(', ')} <strong>(${m.scoreB})</strong>
-                    </p>
+                    <p style="margin: 0.5rem 0 0 0;"><strong>(${m.scoreA})</strong> ${m.teamA.join(', ')} <span style="color:var(--accent-color); font-weight:bold;">vs</span> ${m.teamB.join(', ')} <strong>(${m.scoreB})</strong></p>
                 </div>`;
             });
-            document.getElementById('history-list').innerHTML = html || '<p>Aucun historique pour ce mois.</p>';
+            document.getElementById('history-list').innerHTML = html || '<p>Aucun historique.</p>';
         }
 
         function updateArchivesView() {
             let html = '';
-            if(archives.length === 0) {
-                html = '<p>Aucun mois archivé pour le moment.</p>';
+            if(appData.archives.length === 0) {
+                html = '<p>Aucun mois archivé.</p>';
             } else {
-                [...archives].reverse().forEach(arc => {
+                [...appData.archives].reverse().forEach(arc => {
                     html += `<div style="background:#fdfefe; border:2px solid #1b4d2e; padding:1rem; margin-bottom:1.5rem; border-radius:8px;">
                         <h3 style="margin-top:0; color:var(--primary-color);">📅 Mois : ${arc.month}</h3>
-                        <h4>Podium Individuel</h4>
-                        <ul>`;
+                        <h4>Podium Individuel</h4><ul>`;
                     arc.indiv.slice(0, 3).forEach((p, idx) => {
                         html += `<li>#${idx+1} <strong>${p.name}</strong> (${p.points} pts)</li>`;
                     });
@@ -619,7 +602,9 @@
             }
             document.getElementById('archives-list').innerHTML = html;
         }
-        
-</script>
+
+        // Lancer le chargement initial au démarrage de la page
+        loadData();
+    </script>
 </body>
 </html>
